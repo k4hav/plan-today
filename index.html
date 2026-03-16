@@ -1,0 +1,503 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PlanToday — Smart Study Planner</title>
+<!-- Google Fonts -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&family=Playfair+Display:ital,wght@0,700;1,700&display=swap" rel="stylesheet">
+<!-- Styles -->
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="toast" id="toast"></div>
+
+<!-- ═══════════ NAV ═══════════ -->
+<nav>
+  <a class="logo" href="#">
+    <div class="logo-animated">
+      <svg class="logo-svg" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <linearGradient id="lg1" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%"   stop-color="#6c63ff"/>
+            <stop offset="50%"  stop-color="#a78bfa"/>
+            <stop offset="100%" stop-color="#ec4899"/>
+          </linearGradient>
+          <linearGradient id="lg2" x1="0%" y1="100%" x2="100%" y2="0%">
+            <stop offset="0%"   stop-color="#a78bfa"/>
+            <stop offset="100%" stop-color="#6c63ff"/>
+          </linearGradient>
+        </defs>
+        <circle cx="18" cy="18" r="16" stroke="url(#lg1)" stroke-width="1.5" fill="none" class="logo-ring"/>
+        <rect x="9"  y="11" width="18" height="15" rx="3" fill="url(#lg1)" opacity="0.15"/>
+        <rect x="9"  y="11" width="18" height="15" rx="3" stroke="url(#lg1)" stroke-width="1.4" fill="none"/>
+        <rect x="9"  y="11" width="18" height="5"  rx="3" fill="url(#lg1)" opacity="0.5"/>
+        <rect x="9"  y="14" width="18" height="2"  fill="url(#lg1)" opacity="0.5"/>
+        <line x1="13" y1="9"  x2="13" y2="13" stroke="url(#lg1)" stroke-width="1.8" stroke-linecap="round"/>
+        <line x1="23" y1="9"  x2="23" y2="13" stroke="url(#lg1)" stroke-width="1.8" stroke-linecap="round"/>
+        <circle cx="14" cy="20.5" r="1.2" fill="url(#lg2)" class="logo-dot1"/>
+        <circle cx="18" cy="20.5" r="1.2" fill="url(#lg2)" class="logo-dot2"/>
+        <circle cx="22" cy="20.5" r="1.2" fill="url(#lg2)" class="logo-dot3"/>
+        <path d="M13 20.5 L14.8 22.3 L18 19" stroke="#a78bfa" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="logo-check" fill="none"/>
+      </svg>
+    </div>
+    <div class="logo-text-wrap">
+      <span class="logo-word1">Plan</span><span class="logo-word2">Today</span>
+    </div>
+  </a>
+  <div class="nav-tabs">
+    <button class="ntab on"  onclick="showPage('today',this)">Today</button>
+    <button class="ntab"     onclick="showPage('analytics',this)">Analytics</button>
+    <button class="ntab"     onclick="showPage('pomodoro',this)">Pomodoro</button>
+  </div>
+  <div class="nav-r">
+    <div class="nav-chip" id="nav-date"></div>
+    <div class="streak-b">🔥 <span id="stk">0</span> day streak</div>
+    <button class="icon-btn" onclick="openSettings()" title="Settings">⚙</button>
+  </div>
+</nav>
+
+<!-- ═══════════ QUOTE BAR ═══════════ -->
+<div class="quote-bar" onclick="nextQ()">
+  <div class="qb-ico">💬</div>
+  <div class="qb-text" id="q-t"></div>
+  <div class="qb-sep">—</div>
+  <div class="qb-auth" id="q-a"></div>
+  <div class="qb-refresh" onclick="nextQ(event)">↻</div>
+</div>
+
+<!-- ═══════════ SETUP BANNER ═══════════ -->
+<div class="setup-wrap" id="setup-banner">
+  <div class="setup-inner">
+    <div>
+      <h3>👋 Welcome to PlanToday!</h3>
+      <p>Enter your name to personalize your planner.</p>
+    </div>
+    <div class="setup-form">
+      <input class="gi" id="sn" placeholder="Your name..." style="min-width:unset;width:130px">
+      <button class="btn btn-p" onclick="saveSetup()">Continue →</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════ GOAL SELECTOR ═══════════ -->
+<div class="goal-wrap">
+  <div class="goal-bar-card">
+    <div>
+      <h3>🎯 Select Your Goal</h3>
+      <p>Categories and tasks auto-update based on your goal</p>
+    </div>
+    <div class="gpreset-wrap" id="goal-presets"></div>
+  </div>
+</div>
+
+<!-- ═══════════ HERO ═══════════ -->
+<div class="hero">
+  <div>
+    <h1 id="hero-h">Good Morning! 👋</h1>
+    <div class="hero-sub">
+      <div class="pdot"></div>
+      <span id="hero-s">Track tasks · Stay consistent · Achieve your goals</span>
+    </div>
+  </div>
+  <div class="hero-btns">
+    <button class="btn btn-o" onclick="openTpl()">
+      <svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>
+      Templates
+    </button>
+    <button class="btn btn-p btn-glow" onclick="openAdd()">
+      <svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+      Add Task
+    </button>
+  </div>
+</div>
+
+<!-- ═══════════ STATS STRIP ═══════════ -->
+<div class="stats">
+  <div class="sc tilt" style="--sc:rgba(108,99,255,.07)">
+    <div class="sc-num" id="s-tot" style="color:var(--acc)">0</div>
+    <div class="sc-l">Total Tasks</div>
+    <div class="sc-bar"><div class="sc-bf" style="width:100%;background:linear-gradient(90deg,var(--acc),var(--acc2))"></div></div>
+  </div>
+  <div class="sc tilt" style="--sc:rgba(34,197,94,.07)">
+    <div class="sc-num" id="s-don" style="color:var(--g)">0</div>
+    <div class="sc-l">Completed</div>
+    <div class="sc-bar"><div class="sc-bf" id="sbf-d" style="width:0%;background:var(--g)"></div></div>
+  </div>
+  <div class="sc tilt" style="--sc:rgba(239,68,68,.07)">
+    <div class="sc-num" id="s-mis" style="color:var(--r)">0</div>
+    <div class="sc-l">Missed</div>
+    <div class="sc-bar"><div class="sc-bf" id="sbf-m" style="width:0%;background:var(--r)"></div></div>
+  </div>
+  <div class="sc tilt" style="--sc:rgba(245,158,11,.07)">
+    <div class="sc-num" id="s-pen" style="color:var(--am)">0</div>
+    <div class="sc-l">Remaining</div>
+    <div class="sc-bar"><div class="sc-bf" id="sbf-p" style="width:0%;background:var(--am)"></div></div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════
+     TODAY PAGE
+═══════════════════════════════════ -->
+<div class="app-page on" id="page-today">
+<div class="app-grid">
+
+  <!-- LEFT COLUMN -->
+  <div class="col-l">
+
+    <!-- TASK BOARD -->
+    <div class="card">
+      <div class="card-h">
+        <div class="card-t"><div class="ci">📋</div>Task Board</div>
+        <button class="btn btn-r btn-sm" onclick="clearDone()">
+          <svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6M14 11v6"/></svg>
+          Clear Done
+        </button>
+      </div>
+      <div class="task-tabs">
+        <button class="ttab on" onclick="switchTab('all',this)">All <span class="tc" id="tc-a">0</span></button>
+        <button class="ttab"    onclick="switchTab('pending',this)">Pending <span class="tc" id="tc-p">0</span></button>
+        <button class="ttab"    onclick="switchTab('done',this)">Done <span class="tc" id="tc-d">0</span></button>
+        <button class="ttab"    onclick="switchTab('missed',this)">Missed <span class="tc" id="tc-m">0</span></button>
+      </div>
+      <div class="cat-chips-w" id="cat-chips"></div>
+      <div class="add-row">
+        <input class="gi" id="ti" placeholder="Type a task… press Enter" onkeydown="if(event.key==='Enter')addTask()">
+        <select class="gsel" id="tcat"></select>
+        <input class="gtm" id="ttm" placeholder="2h">
+        <button class="btn btn-p btn-sm" onclick="addTask()">
+          <svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          Add
+        </button>
+      </div>
+      <div class="tlist" id="task-list"></div>
+    </div>
+
+    <!-- NOTES -->
+    <div class="card">
+      <div class="card-h">
+        <div class="card-t"><div class="ci">📓</div>Notes & Reflections</div>
+        <span id="note-ts" style="font-size:11px;color:var(--t3);font-family:'JetBrains Mono',monospace"></span>
+      </div>
+      <div class="nstabs">
+        <button class="nstab on" onclick="switchNoteTab('write',this)">✏ Write</button>
+        <button class="nstab"    onclick="switchNoteTab('all',this)">
+          📚 All Notes <span class="nbadge" id="nbadge">0</span>
+        </button>
+        <button class="nstab"    onclick="switchNoteTab('pinned',this)">📌 Pinned</button>
+      </div>
+      <!-- Write panel -->
+      <div class="npanel on" id="np-w">
+        <div class="nc-wrap">
+          <textarea class="nta" id="nta"
+            placeholder="Write your thoughts, learnings, doubts...&#10;&#10;• What went well today?&#10;• What was difficult?&#10;• What to remember?"
+            oninput="document.getElementById('cct').textContent=this.value.length"></textarea>
+          <div class="nc-foot">
+            <select class="nc-sel" id="ncat">
+              <option value="general">💡 General</option>
+              <option value="learning">📖 Learning</option>
+              <option value="doubt">❓ Doubt</option>
+              <option value="win">🏆 Achievement</option>
+              <option value="reminder">🔔 Reminder</option>
+              <option value="mood">😊 Mood</option>
+            </select>
+            <div style="display:flex;align-items:center;gap:8px">
+              <span class="cct" id="cct">0</span>
+              <button class="btn-sv" onclick="saveNote()">Save Note →</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- All notes panel -->
+      <div class="npanel" id="np-a"><div id="all-notes"></div></div>
+      <!-- Pinned panel -->
+      <div class="npanel" id="np-p"><div id="pin-notes"></div></div>
+    </div>
+
+  </div><!-- /col-l -->
+
+  <!-- RIGHT COLUMN -->
+  <div class="col-r">
+
+    <!-- PROGRESS -->
+    <div class="card card-3d">
+      <div class="card-h"><div class="card-t"><div class="ci">📊</div>Today's Progress</div></div>
+      <div class="prog-body">
+        <div class="prog-top">
+          <span class="prog-lbl">Completion Rate</span>
+          <span class="prog-pct" id="prog-pct">0%</span>
+        </div>
+        <div class="prog-track"><div class="prog-fill" id="prog-bar" style="width:0%"></div></div>
+        <div class="sub-rows" id="sub-rows"></div>
+      </div>
+    </div>
+
+    <!-- WEEK CALENDAR -->
+    <div class="card card-3d">
+      <div class="card-h"><div class="card-t"><div class="ci">📅</div>This Week</div></div>
+      <div class="wgrid" id="week-grid"></div>
+    </div>
+
+    <!-- CATEGORY MANAGER -->
+    <div class="card card-3d">
+      <div class="card-h"><div class="card-t"><div class="ci">🗂</div>My Categories</div></div>
+      <div class="cat-mgr">
+        <div class="cat-mgr-title">Current Categories</div>
+        <div class="cat-list" id="cat-list-display"></div>
+        <div class="cat-add-row">
+          <input class="cae" id="new-cat-emoji" placeholder="📌" maxlength="2">
+          <input class="can" id="new-cat-name"  placeholder="Category name" onkeydown="if(event.key==='Enter')addCustomCat()">
+          <input type="color" class="cac" id="new-cat-clr" value="#6c63ff">
+          <button class="btn btn-p btn-sm" onclick="addCustomCat()">+ Add</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- TOMORROW -->
+    <div class="card card-3d">
+      <div class="card-h"><div class="card-t"><div class="ci">🔭</div>Tomorrow's Plan</div></div>
+      <div class="tmr-add">
+        <input class="gi" id="tmi" placeholder="Plan for tomorrow…" onkeydown="if(event.key==='Enter')addTmr()" style="min-width:unset">
+        <button class="btn btn-p btn-sm" onclick="addTmr()" style="padding:8px 11px">
+          <svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        </button>
+      </div>
+      <div class="tmr-list" id="tmr-list"></div>
+    </div>
+
+  </div><!-- /col-r -->
+</div>
+</div><!-- /page-today -->
+
+
+<!-- ═══════════════════════════════════
+     ANALYTICS PAGE
+═══════════════════════════════════ -->
+<div class="app-page" id="page-analytics">
+<div class="app-grid">
+  <div class="col-l">
+    <div class="card">
+      <div class="card-h"><div class="card-t"><div class="ci">🔥</div>30-Day Activity Heatmap</div></div>
+      <div style="padding:13px 15px 15px">
+        <div style="font-size:10px;font-weight:800;color:var(--t3);letter-spacing:.08em;text-transform:uppercase;margin-bottom:8px">Daily Completion</div>
+        <div class="hmap" id="heatmap"></div>
+        <div class="hleg">
+          <span>Less</span>
+          <div class="hl h0"></div><div class="hl h1"></div><div class="hl h2"></div><div class="hl h3"></div><div class="hl h4"></div>
+          <span>More</span>
+        </div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-h"><div class="card-t"><div class="ci">📈</div>Weekly Chart</div></div>
+      <div style="padding:13px 16px 15px">
+        <div class="bchart" id="bar-chart"></div>
+        <div style="display:flex;justify-content:space-between" id="bar-labels"></div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-h"><div class="card-t"><div class="ci">🎯</div>Category Distribution</div></div>
+      <div style="padding:13px 16px" id="cat-dist"></div>
+    </div>
+  </div>
+  <div class="col-r">
+    <div class="card card-3d">
+      <div class="card-h"><div class="card-t"><div class="ci">🏆</div>Lifetime Stats</div></div>
+      <div style="padding:12px 14px" id="lifetime"></div>
+    </div>
+  </div>
+</div>
+</div><!-- /page-analytics -->
+
+
+<!-- ═══════════════════════════════════
+     POMODORO PAGE
+═══════════════════════════════════ -->
+<div class="app-page" id="page-pomodoro">
+<div class="app-grid">
+  <div class="col-l" style="align-items:center">
+    <div class="card card-3d" style="width:100%;max-width:380px">
+      <div class="card-h"><div class="card-t"><div class="ci">🍅</div>Pomodoro Timer</div></div>
+      <div class="pomo-b">
+        <div class="pomo-rw">
+          <svg width="160" height="160" viewBox="0 0 160 160">
+            <defs>
+              <linearGradient id="pg" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%"   stop-color="#6c63ff"/>
+                <stop offset="100%" stop-color="#a78bfa"/>
+              </linearGradient>
+            </defs>
+            <circle cx="80" cy="80" r="68" fill="none" stroke="#1a1a1a" stroke-width="6"/>
+            <circle id="pomo-ring" cx="80" cy="80" r="68" fill="none"
+              stroke="url(#pg)" stroke-width="6" stroke-linecap="round"
+              stroke-dasharray="427" stroke-dashoffset="0"
+              transform="rotate(-90 80 80)" style="transition:stroke-dashoffset .5s ease"/>
+          </svg>
+          <div class="pomo-dig">
+            <div class="pomo-time" id="pomo-d">25:00</div>
+            <div class="pomo-lbl"  id="pomo-l">FOCUS</div>
+          </div>
+        </div>
+        <div class="pomo-info">Session <span id="pomo-sn">1</span> of 4</div>
+        <div class="pomo-btns">
+          <button class="btn btn-gs" id="pomo-btn" onclick="togglePomo()">▶ Start</button>
+          <button class="btn btn-gh" onclick="resetPomo()">↺ Reset</button>
+        </div>
+        <div class="pdots">
+          <div class="pdot-c" id="pd1"></div>
+          <div class="pdot-c" id="pd2"></div>
+          <div class="pdot-c" id="pd3"></div>
+          <div class="pdot-c" id="pd4"></div>
+        </div>
+        <div class="pomo-hint">25 min focus · 5 min break · 4 sessions</div>
+      </div>
+    </div>
+  </div>
+  <div class="col-r">
+    <div class="card">
+      <div class="card-h"><div class="card-t"><div class="ci">📋</div>Today's Tasks</div></div>
+      <div class="tlist" id="pomo-list" style="max-height:380px;overflow-y:auto"></div>
+    </div>
+  </div>
+</div>
+</div><!-- /page-pomodoro -->
+
+
+<!-- ═══════════ FOOTER ═══════════ -->
+<footer>
+  <div class="fl">
+    <svg viewBox="0 0 24 24" fill="none" style="width:22px;height:22px;flex-shrink:0">
+      <defs><linearGradient id="flg" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%"   stop-color="#6c63ff"/>
+        <stop offset="100%" stop-color="#a78bfa"/>
+      </linearGradient></defs>
+      <rect x="3"  y="4"  width="18" height="17" rx="3" stroke="url(#flg)" stroke-width="1.5" fill="none"/>
+      <rect x="3"  y="4"  width="18" height="6"  rx="3" fill="url(#flg)" opacity="0.35"/>
+      <line x1="8"  y1="2" x2="8"  y2="6" stroke="url(#flg)" stroke-width="1.8" stroke-linecap="round"/>
+      <line x1="16" y1="2" x2="16" y2="6" stroke="url(#flg)" stroke-width="1.8" stroke-linecap="round"/>
+      <path d="M8 14 L10.5 16.5 L16 12" stroke="url(#flg)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+    <span style="color:#fff;font-weight:800"></span><span style="background:linear-gradient(135deg,var(--acc),var(--acc2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;font-weight:800"></span>
+  </div>
+
+  <!-- CONNECT WITH CREATOR -->
+  <div class="connect-section">
+    <div class="connect-label">Connect with the Creator</div>
+    <div class="connect-links">
+      <a href="https://instagram.com/k4hav" target="_blank" class="clink" style="--cl:#e1306c;--cl-glow:rgba(225,48,108,.3)">
+        <svg viewBox="0 0 24 24" class="clink-icon" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="2" y="2" width="20" height="20" rx="5" ry="5"/>
+          <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/>
+          <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/>
+        </svg>
+        <span>k4hav</span>
+      </a>
+      <a href="https://x.com/k4hav" target="_blank" class="clink" style="--cl:#e7e9ea;--cl-glow:rgba(231,233,234,.25)">
+        <svg viewBox="0 0 24 24" class="clink-icon" fill="currentColor" stroke="none">
+          <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.746l7.73-8.835L1.254 2.25H8.08l4.259 5.63 5.905-5.63Zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
+        </svg>
+        <span>k4hav</span>
+      </a>
+      <a href="https://t.me/k4hav" target="_blank" class="clink" style="--cl:#2ca5e0;--cl-glow:rgba(44,165,224,.3)">
+        <svg viewBox="0 0 24 24" class="clink-icon" fill="currentColor" stroke="none">
+          <path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/>
+        </svg>
+        <span>k4hav</span>
+      </a>
+      <a href="https://github.com/k4hav" target="_blank" class="clink" style="--cl:#f0f6ff;--cl-glow:rgba(240,246,255,.2)">
+        <svg viewBox="0 0 24 24" class="clink-icon" fill="currentColor" stroke="none">
+          <path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/>
+        </svg>
+        <span>k4hav</span>
+      </a>
+    </div>
+  </div>
+
+  <div class="fc">Copyright 2026 <span class="fn">ƘҽՏհɑѵ</span>. All Rights Reserved.</div>
+</footer>
+
+
+<!-- ═══════════ MODALS ═══════════ -->
+
+<!-- Add Task Modal -->
+<div class="modal-ov" id="add-modal">
+  <div class="mbox">
+    <div class="m-topline"></div>
+    <div class="m-title">Add New Task</div>
+    <div class="m-sub">What needs to get done today?</div>
+    <div class="m-f">
+      <label class="m-lbl">Task Description</label>
+      <input class="gi" id="m-task" placeholder="Describe your task…" style="width:100%">
+    </div>
+    <div class="m-g2">
+      <div class="m-f">
+        <label class="m-lbl">Category</label>
+        <select class="gsel" id="m-cat" style="width:100%"></select>
+      </div>
+      <div class="m-f">
+        <label class="m-lbl">Time Estimate</label>
+        <input class="gi" id="m-time" placeholder="e.g. 2h, 45m" style="width:100%">
+      </div>
+    </div>
+    <div class="m-f">
+      <label class="m-lbl">Priority</label>
+      <div class="pri-row">
+        <div class="po"    id="ph" onclick="setPri('high')">🔴 High</div>
+        <div class="po on" id="pm" onclick="setPri('med')">🟡 Med</div>
+        <div class="po"    id="pl" onclick="setPri('low')">🟢 Low</div>
+      </div>
+    </div>
+    <div class="m-acts">
+      <button class="btn btn-gh" onclick="closeM()">Cancel</button>
+      <button class="btn btn-p"  onclick="addFromModal()">Add Task →</button>
+    </div>
+  </div>
+</div>
+
+<!-- Template Modal -->
+<div class="modal-ov" id="tpl-modal">
+  <div class="mbox">
+    <div class="m-topline"></div>
+    <div class="m-title">Quick Start Templates</div>
+    <div class="m-sub">Load a ready-made task set for your workflow</div>
+    <div class="tpl-grid" id="tpl-grid"></div>
+    <div class="m-acts">
+      <button class="btn btn-gh" onclick="closeM()">Close</button>
+    </div>
+  </div>
+</div>
+
+<!-- Settings Modal -->
+<div class="modal-ov" id="set-modal">
+  <div class="mbox">
+    <div class="m-topline"></div>
+    <div class="m-title">Settings</div>
+    <div class="m-sub">Customize PlanToday</div>
+    <div class="m-g2" style="margin-bottom:14px">
+      <div class="m-f">
+        <label class="m-lbl">Your Name</label>
+        <input class="gi" id="set-name" placeholder="Name" style="width:100%">
+      </div>
+      <div class="m-f">
+        <label class="m-lbl">Your Goal</label>
+        <input class="gi" id="set-goal" placeholder="e.g. JEE 2026" style="width:100%">
+      </div>
+    </div>
+    <div class="m-acts">
+      <button class="btn btn-gh" onclick="closeM()">Cancel</button>
+      <button class="btn btn-p"  onclick="saveSettings()">Save Changes ✓</button>
+    </div>
+  </div>
+</div>
+
+
+<!-- ═══════════ SCRIPTS ═══════════ -->
+<!-- Load data first, then app logic -->
+<script src="data.js"></script>
+<script src="app.js"></script>
+
+</body>
+</html>
