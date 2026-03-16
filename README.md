@@ -11,7 +11,7 @@
 
 ## 🌐 Live Demo
 
-👉 **[plantoday.live](https://k4hav.github.io/plantoday)**
+👉 **(https://k4hav.github.io/plantoday)**
 
 ---
 
@@ -44,21 +44,7 @@ plantoday/
 
 ---
 
-## 🚀 Getting Started
 
-### Option 1 — Just open it
-Download the files and open `index.html` in any browser. Done.
-
-### Option 2 — Clone it
-```bash
-git clone https://github.com/k4hav/plantoday.git
-cd plantoday
-# Open index.html in browser
-```
-
-No build step. No npm install. No terminal needed.
-
----
 
 ## 🎯 Supported Goals
 
@@ -97,7 +83,7 @@ No build step. No npm install. No terminal needed.
 
 ## 👨‍💻 Author
 
-**Keshav** — [@k4hav](https://k4hav.github.io/plan-today/)
+**Keshav** — [@k4hav](https://github.com/k4hav)
 
 [![Instagram](https://img.shields.io/badge/Instagram-k4hav-e1306c?style=flat-square&logo=instagram)](https://instagram.com/k4hav)
 [![X](https://img.shields.io/badge/X-k4hav-000000?style=flat-square&logo=x)](https://x.com/k4hav)
@@ -106,27 +92,4 @@ No build step. No npm install. No terminal needed.
 
 ---
 
-## 📄 License
 
-This project is licensed under the **MIT License** — see [LICENSE](LICENSE) file for details.
-
----
-
-<div align="center">
-  Made with ❤️ by <strong>Keshav</strong> · Copyright 2026 ƘҽՏհɑѵ
-</div>
-```
-
----
-
-## 📄 License — MIT Choose Karo
-
-GitHub pe repository banate waqt ya baad mein **MIT License** select karo. Yeh best hai kyunki:
-
-- ✅ **Free hai** — koi bhi use, copy, modify kar sakta hai
-- ✅ **Credit milta hai** — tumhara naam hamesha rahega
-- ✅ **Most popular** — almost sab open source projects MIT use karte hain
-- ✅ **Simple** — sirf ek condition: "credit dena hoga"
-
-**LICENSE file content** (yeh copy karo, `k4hav` apna naam se replace karo):
-```
