@@ -11,7 +11,7 @@
 
 ## 🌐 Live Demo
 
-👉 **(https://k4hav.github.io/plantoday)**
+👉 **(https://k4hav.github.io/plan-today)**
 
 ---
 
